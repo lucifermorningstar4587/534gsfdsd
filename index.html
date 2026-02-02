@@ -3,324 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For You 💚</title>
-    <!-- Tailwind for Styling -->
+    <title>For My Love 💚</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- GSAP for Smooth Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <!-- Lucide for Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --sage: #9CAF88;
-            --cream: #FDFBF7;
-            --dark-sage: #7d8f6b;
-        }
+        :root { --sage: #9CAF88; --cream: #FDFBF7; --dark-sage: #7d8f6b; --gold: #D4AF37; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--cream); color: #4A4A4A; margin: 0; overflow-x: hidden; }
+        h1, h2, h3, .romantic-font { font-family: 'Dancing Script', cursive; }
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--cream);
-            color: #4A4A4A;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
-        h1, h2, .romantic-font { font-family: 'Dancing Script', cursive; }
-
-        /* Page Handling */
-        .page {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            min-height: 100vh;
-            display: none; /* Hidden by default */
-            opacity: 0;
-            padding-bottom: 150px;
-            z-index: 1;
-        }
-
-        .active-page {
-            display: block;
-            opacity: 1;
-            z-index: 10;
-        }
-
-        /* Nav Styling */
+        /* Navigation */
         .tree-nav {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 15px 25px;
-            border-radius: 50px;
-            border: 1px solid rgba(156, 175, 136, 0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
+            padding: 12px 24px; border-radius: 50px; border: 1px solid rgba(156, 175, 136, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; gap: 20px;
         }
-
-        .leaf-btn {
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--sage);
-        }
-
-        .leaf-btn:hover { transform: scale(1.2) translateY(-5px); color: var(--dark-sage); }
+        .leaf-btn { cursor: pointer; color: var(--sage); transition: all 0.3s; display: flex; flex-direction: column; align-items: center; }
+        .leaf-btn:hover { transform: translateY(-5px); color: var(--dark-sage); }
         .leaf-btn.active { color: #E6B2B2; transform: scale(1.1); }
 
-        /* Glass Cards */
-        .glass-card {
-            background: white;
-            border-radius: 24px;
-            padding: 2rem;
-            box-shadow: 0 10px 25px rgba(156, 175, 136, 0.1);
-            border: 1px solid rgba(156, 175, 136, 0.2);
+        /* Pages */
+        .page { position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh; display: none; opacity: 0; padding-bottom: 120px; z-index: 1; }
+        .active-page { display: block; opacity: 1; z-index: 10; }
+
+        /* Story Cards */
+        .story-card {
+            background: white; border-radius: 20px; padding: 1.5rem; cursor: pointer;
+            border: 1px solid rgba(156, 175, 136, 0.2); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+        .story-card:hover { transform: scale(1.03); box-shadow: 0 10px 30px rgba(156, 175, 136, 0.2); border-color: var(--sage); }
+
+        /* Modal / Window */
+        #story-modal {
+            position: fixed; inset: 0; background: rgba(74, 74, 74, 0.4); 
+            backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px;
+        }
+        .modal-content {
+            background: var(--cream); width: 100%; max-width: 500px; border-radius: 30px; 
+            padding: 40px; position: relative; border: 2px solid var(--sage);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
         }
 
-        /* Buttons */
-        .primary-btn {
-            background-color: var(--sage);
-            color: white;
-            padding: 12px 32px;
-            border-radius: 50px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(156, 175, 136, 0.4);
-        }
-
-        .primary-btn:hover { transform: scale(1.05); background-color: var(--dark-sage); }
-
-        #no-btn { position: relative; transition: all 0.2s ease; }
+        /* Elements */
+        .primary-btn { background: var(--sage); color: white; padding: 12px 30px; border-radius: 50px; transition: 0.3s; box-shadow: 0 5px 15px rgba(156, 175, 136, 0.4); }
+        .primary-btn:hover { background: var(--dark-sage); transform: scale(1.05); }
+        #no-btn { position: relative; transition: 0.2s; }
     </style>
 </head>
 <body>
 
-    <!-- NAVIGATION: LOVE TREE NAVIGATOR -->
-    <nav class="tree-nav flex items-center gap-6 md:gap-10">
-        <div onclick="navTo('home')" class="leaf-btn" id="nav-home">
-            <i data-lucide="home"></i>
-            <span class="text-[10px] mt-1 font-bold">Home</span>
-        </div>
-        <div onclick="navTo('story')" class="leaf-btn" id="nav-story">
-            <i data-lucide="book-heart"></i>
-            <span class="text-[10px] mt-1 font-bold">Story</span>
-        </div>
-        <div onclick="navTo('gallery')" class="leaf-btn" id="nav-gallery">
-            <i data-lucide="camera"></i>
-            <span class="text-[10px] mt-1 font-bold">Us</span>
-        </div>
-        <div onclick="navTo('notes')" class="leaf-btn" id="nav-notes">
-            <i data-lucide="mail"></i>
-            <span class="text-[10px] mt-1 font-bold">Notes</span>
-        </div>
-        <div onclick="navTo('games')" class="leaf-btn" id="nav-games">
-            <i data-lucide="gamepad-2"></i>
-            <span class="text-[10px] mt-1 font-bold">Fun</span>
-        </div>
-        <div onclick="navTo('valentine')" class="leaf-btn" id="nav-valentine">
-            <i data-lucide="heart" class="text-pink-400"></i>
-            <span class="text-[10px] mt-1 font-bold">Will You?</span>
-        </div>
+    <!-- NAVIGATION -->
+    <nav class="tree-nav">
+        <div onclick="navTo('home')" class="leaf-btn active" id="nav-home"><i data-lucide="home"></i><span class="text-[10px] font-bold">Home</span></div>
+        <div onclick="navTo('story')" class="leaf-btn" id="nav-story"><i data-lucide="book-heart"></i><span class="text-[10px] font-bold">Story</span></div>
+        <div onclick="navTo('gallery')" class="leaf-btn" id="nav-gallery"><i data-lucide="camera"></i><span class="text-[10px] font-bold">Us</span></div>
+        <div onclick="navTo('notes')" class="leaf-btn" id="nav-notes"><i data-lucide="mail"></i><span class="text-[10px] font-bold">Notes</span></div>
+        <div onclick="navTo('valentine')" class="leaf-btn" id="nav-valentine"><i data-lucide="heart" class="text-pink-400"></i><span class="text-[10px] font-bold">Be Mine</span></div>
     </nav>
 
-    <!-- CONTENT SECTIONS -->
-    <div id="page-container">
+    <!-- STORY MODAL -->
+    <div id="story-modal" onclick="closeModal()">
+        <div class="modal-content text-center" onclick="event.stopPropagation()">
+            <button onclick="closeModal()" class="absolute top-5 right-5 text-gray-400 hover:text-sage"><i data-lucide="x"></i></button>
+            <div id="modal-icon" class="text-5xl mb-4">🌱</div>
+            <h3 id="modal-title" class="text-4xl text-sage mb-4">Milestone</h3>
+            <div class="w-20 h-1 bg-sage/20 mx-auto mb-6"></div>
+            <p id="modal-text" class="text-lg leading-relaxed text-gray-600 font-light"></p>
+            <p class="mt-8 text-sm italic text-sage/60 font-medium">Click anywhere outside to close</p>
+        </div>
+    </div>
 
-        <!-- PAGE 1: LANDING -->
+    <!-- MAIN SECTIONS -->
+    <div id="content">
+
+        <!-- HOME -->
         <section id="home" class="page active-page flex items-center justify-center text-center px-6">
             <div>
-                <div class="mb-6 inline-block bg-white p-4 rounded-full shadow-sm">
-                    <i data-lucide="leaf" class="text-sage w-12 h-12"></i>
+                <div class="mb-6 inline-block bg-white p-5 rounded-full shadow-md animate-bounce">
+                    <i data-lucide="leaf" class="text-sage w-10 h-10"></i>
                 </div>
-                <h1 class="text-5xl md:text-7xl text-[#9CAF88] mb-6">Hey love...</h1>
-                <p class="text-xl md:text-2xl font-light mb-10 text-gray-500">this little corner of the internet is only for you 💚</p>
-                <button onclick="navTo('story')" class="primary-btn text-xl font-semibold">Start the Journey 🌿💖</button>
+                <h1 class="text-6xl md:text-7xl text-sage mb-4">Hey love...</h1>
+                <p class="text-xl md:text-2xl text-gray-500 mb-10">this little corner of the internet is only for you 💚</p>
+                <button onclick="navTo('story')" class="primary-btn text-lg">Start the Journey 🌿💖</button>
             </div>
         </section>
 
-        <!-- PAGE 2: STORY -->
-        <section id="story" class="page px-6 pt-20">
-            <h2 class="text-5xl text-center text-sage mb-12">Our Story</h2>
-            <div class="max-w-2xl mx-auto space-y-6">
-                <div class="glass-card flex items-center gap-6">
-                    <span class="text-3xl">🌱</span>
+        <!-- OUR STORY -->
+        <section id="story" class="page pt-24 px-6">
+            <h2 class="text-5xl text-center text-sage mb-4">Our Story</h2>
+            <p class="text-center text-gray-400 mb-12 italic text-lg">Click each moment to relive the memory...</p>
+            
+            <div class="max-w-xl mx-auto space-y-6">
+                <!-- Card 1 -->
+                <div class="story-card flex items-center gap-6" onclick="openModal('meet')">
+                    <span class="text-3xl bg-sage/10 p-3 rounded-full">🌱</span>
                     <div>
-                        <h3 class="font-bold text-lg">First Meet</h3>
-                        <p class="text-gray-500">The day my life changed forever...</p>
+                        <h4 class="font-bold text-gray-700">The First Meet</h4>
+                        <p class="text-xs text-sage font-bold uppercase tracking-widest">Tap to expand</p>
                     </div>
                 </div>
-                <div class="glass-card flex items-center gap-6">
-                    <span class="text-3xl">💬</span>
+                <!-- Card 2 -->
+                <div class="story-card flex items-center gap-6" onclick="openModal('talk')">
+                    <span class="text-3xl bg-sage/10 p-3 rounded-full">💬</span>
                     <div>
-                        <h3 class="font-bold text-lg">First Conversation</h3>
-                        <p class="text-gray-500">Hours felt like minutes with you.</p>
+                        <h4 class="font-bold text-gray-700">First Conversation</h4>
+                        <p class="text-xs text-sage font-bold uppercase tracking-widest">Tap to expand</p>
                     </div>
                 </div>
-                <div class="glass-card flex items-center gap-6">
-                    <span class="text-3xl">🍕</span>
+                <!-- Card 3 -->
+                <div class="story-card flex items-center gap-6" onclick="openModal('laugh')">
+                    <span class="text-3xl bg-sage/10 p-3 rounded-full">😝</span>
                     <div>
-                        <h3 class="font-bold text-lg">First Date</h3>
-                        <p class="text-gray-500">I was nervous, but you were perfect.</p>
+                        <h4 class="font-bold text-gray-700">First Laugh & Fight</h4>
+                        <p class="text-xs text-sage font-bold uppercase tracking-widest">Tap to expand</p>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="story-card flex items-center gap-6" onclick="openModal('love')">
+                    <span class="text-3xl bg-sage/10 p-3 rounded-full">💚</span>
+                    <div>
+                        <h4 class="font-bold text-gray-700">Falling in Love</h4>
+                        <p class="text-xs text-sage font-bold uppercase tracking-widest">Tap to expand</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- PAGE 3: GALLERY -->
-        <section id="gallery" class="page px-6 pt-20">
-            <h2 class="text-5xl text-center text-sage mb-12">Memory Gallery</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                <div class="glass-card p-2 overflow-hidden aspect-square">
-                    <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80" class="w-full h-full object-cover rounded-xl shadow-inner">
-                    <p class="text-center mt-2 italic text-sm">Us 💚</p>
-                </div>
-                <div class="glass-card p-2 overflow-hidden aspect-square">
-                    <img src="https://images.unsplash.com/photo-1522673607200-164848242c2f?auto=format&fit=crop&q=80" class="w-full h-full object-cover rounded-xl shadow-inner">
-                    <p class="text-center mt-2 italic text-sm">Cute Moments 🌿</p>
-                </div>
-                <div class="glass-card p-2 overflow-hidden aspect-square">
-                    <img src="https://images.unsplash.com/photo-1494972308805-463bc619d34e?auto=format&fit=crop&q=80" class="w-full h-full object-cover rounded-xl shadow-inner">
-                    <p class="text-center mt-2 italic text-sm">Silly Times 😝</p>
-                </div>
+        <!-- GALLERY -->
+        <section id="gallery" class="page pt-24 px-6">
+            <h2 class="text-5xl text-center text-sage mb-12">Us 💚</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                <div class="aspect-square bg-white p-2 rounded-2xl shadow-sm border border-sage/10"><img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80" class="w-full h-full object-cover rounded-xl"></div>
+                <div class="aspect-square bg-white p-2 rounded-2xl shadow-sm border border-sage/10"><img src="https://images.unsplash.com/photo-1522673607200-164848242c2f?auto=format&fit=crop&q=80" class="w-full h-full object-cover rounded-xl"></div>
+                <div class="aspect-square bg-white p-2 rounded-2xl shadow-sm border border-sage/10"><img src="https://images.unsplash.com/photo-1494972308805-463bc619d34e?auto=format&fit=crop&q=80" class="w-full h-full object-cover rounded-xl"></div>
             </div>
         </section>
 
-        <!-- PAGE 4: LOVE NOTES -->
-        <section id="notes" class="page px-6 pt-20 flex flex-col items-center">
-            <h2 class="text-5xl text-center text-sage mb-12">Love Notes</h2>
-            <div id="envelope" onclick="openLetter()" class="glass-card w-full max-w-md bg-sage text-white text-center cursor-pointer hover:scale-105 transition-transform">
-                <i data-lucide="mail-open" class="mx-auto w-12 h-12 mb-4"></i>
-                <p class="text-2xl romantic-font">Click to read my heart</p>
+        <!-- NOTES -->
+        <section id="notes" class="page pt-24 flex flex-col items-center px-6">
+            <div id="envelope" onclick="this.classList.add('hidden'); document.getElementById('letter').classList.remove('hidden');" class="story-card w-full max-w-md bg-sage text-white text-center py-12">
+                <i data-lucide="mail" class="mx-auto mb-4 w-12 h-12"></i>
+                <p class="romantic-font text-3xl">Open My Letter</p>
             </div>
-            <div id="letter" class="hidden glass-card w-full max-w-md mt-6">
-                <p id="writing-space" class="romantic-font text-2xl leading-relaxed text-gray-700"></p>
-                <p class="text-right font-bold mt-4 text-sage">- Your Favorite Person 💚</p>
-            </div>
-        </section>
-
-        <!-- PAGE 5: GAMES -->
-        <section id="games" class="page px-6 pt-20">
-            <div class="max-w-md mx-auto glass-card text-center">
-                <h2 class="text-4xl text-sage mb-8">How well do you know me?</h2>
-                <div id="quiz-box">
-                    <p class="text-lg mb-6 font-medium">What is my favorite thing about you?</p>
-                    <div class="grid gap-4">
-                        <button onclick="quiz(false)" class="border-2 border-sage p-3 rounded-xl hover:bg-sage hover:text-white transition-all">Your Smile</button>
-                        <button onclick="quiz(false)" class="border-2 border-sage p-3 rounded-xl hover:bg-sage hover:text-white transition-all">Your Eyes</button>
-                        <button onclick="quiz(true)" class="border-2 border-sage p-3 rounded-xl hover:bg-sage hover:text-white transition-all">Everything! 💚</button>
-                    </div>
-                </div>
+            <div id="letter" class="hidden story-card max-w-md w-full">
+                <p class="romantic-font text-2xl text-gray-700 leading-relaxed">
+                    You are the most beautiful thing that has ever happened to me. Every second with you is a gift I promise to cherish forever. I love you, bangaram! 💚
+                </p>
             </div>
         </section>
 
-        <!-- PAGE 6: VALENTINE -->
-        <section id="valentine" class="page px-6 pt-20 flex items-center justify-center">
-            <div class="glass-card max-w-lg w-full text-center border-4 border-sage/30">
+        <!-- VALENTINE -->
+        <section id="valentine" class="page pt-24 px-6 flex items-center justify-center">
+            <div class="story-card max-w-lg w-full text-center border-2 border-sage p-10">
                 <h2 class="text-5xl text-sage mb-10">Will you be my Valentine? 💚</h2>
-                <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
-                    <button id="yes-btn" onclick="celebrate()" class="primary-btn text-2xl px-12 py-6 bg-pink-500 hover:bg-pink-600">YES 💖</button>
-                    <button id="no-btn" onmouseover="dodgeNo()" class="px-8 py-4 bg-gray-200 rounded-full font-bold">NO 😈</button>
+                <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                    <button id="yes-btn" onclick="celebrate()" class="primary-btn text-xl bg-pink-500">YES 💖</button>
+                    <button id="no-btn" onmouseover="dodge()" class="px-8 py-3 bg-gray-100 rounded-full">NO 😈</button>
                 </div>
-                <p id="no-msg" class="mt-8 text-sage font-bold italic"></p>
+                <p id="no-msg" class="mt-8 text-sage italic font-bold"></p>
             </div>
         </section>
 
     </div>
 
     <script>
-        // Initialize Icons
         lucide.createIcons();
 
-        // FAIL-SAFE NAVIGATION
-        function navTo(pageId) {
-            console.log("Navigating to:", pageId);
+        // 1. DATA FOR STORY
+        const storyData = {
+            meet: {
+                title: "The First Meet",
+                icon: "🌱",
+                text: "The day it all began. I remember the air felt different, and my heart knew something special was happening before my mind did. You looked so beautiful, and I was just trying to act cool!"
+            },
+            talk: {
+                title: "First Conversation",
+                icon: "💬",
+                text: "We talked for hours, but it felt like minutes. Every word you said made me realize that you weren't just anyone—you were the person I had been waiting to find. Your voice became my favorite song."
+            },
+            laugh: {
+                title: "Laughs & Fights",
+                icon: "😝",
+                text: "From the silly inside jokes that make us lose our breath laughing, to the little disagreements that only make us stronger. I wouldn't trade our 'spice' for anything in the world!"
+            },
+            love: {
+                title: "Falling in Love",
+                icon: "💚",
+                text: "It wasn't just one moment; it was a thousand little ones. The way you care, the way you smile, and the way you make me feel safe. I love you more than words can ever describe."
+            }
+        };
 
-            // 1. Hide all pages
+        // 2. MODAL LOGIC
+        function openModal(key) {
+            const data = storyData[key];
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-icon').innerText = data.icon;
+            document.getElementById('modal-text').innerText = data.text;
+            
+            const modal = document.getElementById('story-modal');
+            modal.style.display = 'flex';
+            gsap.fromTo(".modal-content", { scale: 0.7, opacity: 0, y: 50 }, { scale: 1, opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.7)" });
+        }
+
+        function closeModal() {
+            gsap.to(".modal-content", { scale: 0.8, opacity: 0, duration: 0.3, onComplete: () => {
+                document.getElementById('story-modal').style.display = 'none';
+            }});
+        }
+
+        // 3. NAVIGATION
+        function navTo(pageId) {
             const pages = document.querySelectorAll('.page');
             pages.forEach(p => {
                 p.classList.remove('active-page');
                 gsap.set(p, { display: 'none', opacity: 0 });
             });
 
-            // 2. Show the selected page
-            const activePage = document.getElementById(pageId);
-            activePage.style.display = 'block'; // Direct CSS for speed
-            
-            gsap.to(activePage, { 
-                opacity: 1, 
-                duration: 0.5, 
-                onStart: () => activePage.classList.add('active-page')
-            });
+            const active = document.getElementById(pageId);
+            active.style.display = 'block';
+            gsap.to(active, { opacity: 1, duration: 0.5 });
 
-            // 3. Update Nav UI
-            document.querySelectorAll('.leaf-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.leaf-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('nav-' + pageId).classList.add('active');
-
-            // 4. Scroll to top
             window.scrollTo(0, 0);
         }
 
-        // Letter Animation
-        function openLetter() {
-            document.getElementById('envelope').style.display = 'none';
-            const letter = document.getElementById('letter');
-            letter.classList.remove('hidden');
-            
-            const text = "I just wanted to take a moment to tell you how much you mean to me. You are my greatest adventure and my favorite person. I love you more than words can say... 💚";
-            const space = document.getElementById('writing-space');
-            
-            let i = 0;
-            space.innerHTML = "";
-            function type() {
-                if (i < text.length) {
-                    space.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, 50);
-                }
-            }
-            type();
-        }
-
-        // Quiz
-        function quiz(isCorrect) {
-            if(isCorrect) {
-                alert("Correct! Because you're perfect in every way 💚");
-            } else {
-                alert("That's true too, but there's a better answer! 😝");
-            }
-        }
-
-        // Valentine Dodge Logic
-        function dodgeNo() {
+        // 4. VALENTINE DODGE
+        function dodge() {
             const btn = document.getElementById('no-btn');
-            const msg = document.getElementById('no-msg');
-            
-            const x = Math.random() * (window.innerWidth - 150);
-            const y = Math.random() * (window.innerHeight - 150);
-            
             btn.style.position = 'fixed';
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
-            
-            msg.innerText = "hehehhe neek aa chance ledhu le 😌 muskuni YES nokku 💚";
+            btn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+            btn.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+            document.getElementById('no-msg').innerText = "hehehhe neek aa chance ledhu le 😌 muskuni YES nokku 💚";
         }
 
         function celebrate() {
             document.body.innerHTML = `
-                <div class="flex flex-col items-center justify-center min-h-screen text-center p-6 bg-[#fdfbf7]">
-                    <h1 class="text-6xl text-sage romantic-font mb-8">heehheeh neek verey option ledhu le nen tappa 😘</h1>
-                    <h2 class="text-4xl text-pink-500 mb-8">Happy Valentine’s Day bangaram 💚</h2>
-                    <p class="text-2xl text-sage font-bold">Forever & Always 🌿💍</p>
-                    <button onclick="location.reload()" class="mt-12 text-gray-400 underline">Back to our story</button>
+                <div class="flex flex-col items-center justify-center min-h-screen text-center p-6">
+                    <h1 class="text-6xl text-sage romantic-font mb-6">heehheeh neek verey option ledhu le nen tappa 😘</h1>
+                    <h2 class="text-4xl text-pink-500 mb-6">Happy Valentine’s Day bangaram 💚</h2>
+                    <p class="text-xl text-sage">Forever & Always 🌿💍</p>
+                    <button onclick="location.reload()" class="mt-10 underline text-gray-400">Replay our story</button>
                 </div>
             `;
-            // Confetti effect could go here
         }
     </script>
 </body>
